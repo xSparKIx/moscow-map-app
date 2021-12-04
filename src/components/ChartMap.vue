@@ -1,7 +1,7 @@
 <script setup>
-import 'leaflet/dist/leaflet.css';
-import 'leaflet';
-import districtsJson from '../assets/districts.json';
+import useMap from './composables/useMap';
+
+const { mapData, createMap } = useMap();
 </script>
 
 <template>
@@ -12,8 +12,6 @@ import districtsJson from '../assets/districts.json';
 export default {
   data() {
     return {
-      // Ссылка на карту
-      map: {},
       // Массив с маркерами карты
       markers: [],
     };
@@ -48,11 +46,11 @@ export default {
      */
     districts: {
       handler(districts) {
-        this.clearAllPoins();
+        this.clearAllMarkers();
 
         districts?.forEach((district, index) => {
           district?.points?.forEach((point) => {
-            const marker = new L.marker([point[0], point[1]]).addTo(this.map);
+            const marker = new L.marker([point[0], point[1]]).addTo(this.mapData);
 
             if (!this.markers[index]) this.markers[index] = [];
             this.markers[index].push(marker);
@@ -68,7 +66,7 @@ export default {
      */
     selectedDistricts: {
       handler() {
-        this.hideUnselectedPoints();
+        this.hideUnselectedMarkers();
       },
       deep: true,
     },
@@ -76,31 +74,9 @@ export default {
 
   methods: {
     /**
-     * Метод создания карты.
-     *
-     * @param {object|string} ref - Ссылка на элемент или id элемента, в который добавляем карту
-     */
-    createMap(ref) {
-      if (!ref) return;
-
-      const mapboxAccessToken =
-        'pk.eyJ1IjoicG9zZWxhIiwiYSI6ImNrd282bHh0aTJjczgyd21kYW1uemg2eDgifQ.6Tiz4FW5BBjAdzj_bpvsQA';
-      const map = L.map(ref).setView([55.7522200, 37.6155600], 10);
-
-      this.map = map;
-
-      L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${mapboxAccessToken}`, {
-        id: 'mapbox/light-v9',
-        tileSize: 512,
-        zoomOffset: -1,
-      }).addTo(map);
-
-      L.geoJson(districtsJson).addTo(map);
-    },
-    /**
      * Метод очистки всех маркеров на карте.
      */
-    clearAllPoins() {
+    clearAllMarkers() {
       this.markers?.forEach((district) => {
         district?.forEach((marker) => {
           marker?.remove();
@@ -110,7 +86,7 @@ export default {
     /**
      * Метод скрытия невыбранных маркеров.
      */
-    hideUnselectedPoints() {
+    hideUnselectedMarkers() {
       this.districts?.forEach((district, index) => {
         const selected = this.selectedDistricts?.includes(district);
 
