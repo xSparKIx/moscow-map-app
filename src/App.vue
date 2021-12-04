@@ -1,7 +1,7 @@
 <script setup>
-import ChartMap from "./components/ChartMap.vue"
-import Chart from "./components/Chart.vue"
-import districtsJson from "./assets/districts.json"
+import ChartMap from './components/ChartMap.vue';
+import Chart from './components/Chart.vue';
+import districtsJson from './assets/districts.json';
 import pointInPolygon from 'point-in-polygon';
 </script>
 
@@ -19,10 +19,9 @@ export default {
     return {
       // Массив районов Москвы
       districts: [],
-      // Массив, выбранных на диаграмме районов
-      // TODO: Возможно убрать и отмечать выбранный округа в массиве districts
+      // Массив выбранных на диаграмме районов
       selectedDistricts: [],
-    }
+    };
   },
 
   methods: {
@@ -36,15 +35,13 @@ export default {
         const districtIndex = Math.floor(Math.random() * this.districts.length);
         const district = districtsJson?.features[districtIndex];
         const coords =
-          district?.geometry?.type === "MultiPolygon" ?
-            // district?.geometry?.coordinates[Math.floor(Math.random() * Math.max(0, district?.geometry?.coordinates?.length - 1))][0] :
+          district?.geometry?.type === 'MultiPolygon' ?
             district?.geometry?.coordinates[Math.floor(Math.random() * district?.geometry?.coordinates?.length)][0] :
             district?.geometry?.coordinates[0];
 
         const pointCoords = this.getRandomPoint(coords);
 
         this.districts[districtIndex]?.points?.push(pointCoords);
-        // Временное решение для диаграммы потом убрать и заменить на length 
         this.districts[districtIndex].pointsCount++;
       }
     },
@@ -53,10 +50,11 @@ export default {
      * Метод получения случайной точки в пределах координат.
      *
      * @param {Array} coordinates - Массив с координатами, в пределах которых надо найти точку
+     * @return {Array} - Возвращает координаты созданной точки
      */
     getRandomPoint(coordinates) {
-      const x = coordinates.map(point => point[0]);
-      const y = coordinates.map(point => point[1]);
+      const x = coordinates.map((point) => point[0]);
+      const y = coordinates.map((point) => point[1]);
 
       const minX = Math.min(...x);
       const minY = Math.min(...y);
@@ -73,23 +71,24 @@ export default {
      * Метод получения и преобразования округов Москвы
      */
     getDistricts() {
-      this.districts = districtsJson?.features?.map(district => {
+      this.districts = districtsJson?.features?.map((district) => {
         return {
           ...district?.properties,
+          // Точки в этом районе
           points: [],
-          // Временное решение для диаграммы потом убрать и заменить на length 
+          // Количество точек в этом районе
           pointsCount: 0,
-        }
-      })
+        };
+      });
     },
 
     /**
-     * Метод очистки случайных точек на карте
+     * Метод очистки точек на карте
      */
     clearPoints() {
       this.selectedDistricts = [];
 
-      this.districts?.forEach(district => {
+      this.districts?.forEach((district) => {
         district.points = [];
         district.pointsCount = 0;
       });
@@ -98,13 +97,12 @@ export default {
     /**
      * Метод выбора округа.
      *
-     * TODO: Попробовать передавать индекс записи тут и не пользоваться методом findIndex
-     *
      * @param {object} district - Объект, содержащий информацию о выбранном округе
      */
     selectDistrict(district) {
-      !this.selectedDistricts.includes(district) ?
-        this.selectedDistricts.push(district) : this.selectedDistricts.splice(this.selectedDistricts.findIndex(item => item.OKATO === district.OKATO), 1);
+      !this.selectedDistricts?.includes(district) ?
+        this.selectedDistricts?.push(district) :
+        this.selectedDistricts?.splice(this.selectedDistricts?.findIndex((item) => item.OKATO === district.OKATO), 1);
     },
   },
 
@@ -115,7 +113,7 @@ export default {
     this.getDistricts();
     this.getPoints();
   },
-}
+};
 </script>
 
 <style lang="scss">

@@ -1,92 +1,125 @@
 <script setup>
-import "leaflet/dist/leaflet.css"
-import "leaflet"
-import districtsJson from "../assets/districts.json"
+import 'leaflet/dist/leaflet.css';
+import 'leaflet';
+import districtsJson from '../assets/districts.json';
 </script>
 
 <template>
-  <div id="map"></div>
+  <div ref="map"></div>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      map: "",
+      // Ссылка на карту
+      map: {},
+      // Массив с маркерами карты
       markers: [],
-    }
+    };
   },
 
   props: {
+    // Массив районов Москвы
     districts: {
       type: Array,
       default: () => [],
     },
+    // Массив выбранных на диаграмме районов
     selectedDistricts: {
       type: Array,
       default: () => [],
     },
   },
 
+  /**
+   * После монтирования компонента создаем карту и добавляем на нее слой.
+   */
   mounted() {
-    const mapboxAccessToken = "pk.eyJ1IjoicG9zZWxhIiwiYSI6ImNrd282bHh0aTJjczgyd21kYW1uemg2eDgifQ.6Tiz4FW5BBjAdzj_bpvsQA";
-    const map = L.map('map').setView([55.7522200, 37.6155600], 10);
-
-    // Возможно костыль и возможно убрать
-    this.map = map
-
-    L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${mapboxAccessToken}`, {
-      id: 'mapbox/light-v9',
-      tileSize: 512,
-      zoomOffset: -1
-    }).addTo(map);
-
-    L.geoJson(districtsJson).addTo(map);
+    this.createMap(this.$refs.map);
   },
 
   watch: {
+    /**
+     * Наблюдатель за изменением районов Москвы.
+     *
+     * При изменении точек в районах создаем новые маркеры и
+     * вносим их в массив маркеров.
+     */
     districts: {
       handler(districts) {
-        this.clearAllPoins()
+        this.clearAllPoins();
 
         districts?.forEach((district, index) => {
-          district?.points?.forEach(point => {
-            // Может разделить на группы https://leafletjs.com/reference.html#layergroup
+          district?.points?.forEach((point) => {
             const marker = new L.marker([point[0], point[1]]).addTo(this.map);
 
-            if (!this.markers[index]) this.markers[index] = []
-            this.markers[index].push(marker)
+            if (!this.markers[index]) this.markers[index] = [];
+            this.markers[index].push(marker);
           });
-        })
+        });
       },
       deep: true,
     },
+    /**
+     * Наблюдатель за изменением выбранных районов Москвы.
+     *
+     * При изменении выбранных районов скрываем невыбранные районы.
+     */
     selectedDistricts: {
       handler() {
-        this.hideUnselectedPoints()
+        this.hideUnselectedPoints();
       },
       deep: true,
     },
   },
 
   methods: {
-    clearAllPoins() {
-      this.markers?.forEach(district => {
-        district?.forEach(marker => {
-          marker?.remove()
-        })
-      })
+    /**
+     * Метод создания карты.
+     *
+     * @param {object|string} ref - Ссылка на элемент или id элемента, в который добавляем карту
+     */
+    createMap(ref) {
+      if (!ref) return;
+
+      const mapboxAccessToken =
+        'pk.eyJ1IjoicG9zZWxhIiwiYSI6ImNrd282bHh0aTJjczgyd21kYW1uemg2eDgifQ.6Tiz4FW5BBjAdzj_bpvsQA';
+      const map = L.map(ref).setView([55.7522200, 37.6155600], 10);
+
+      this.map = map;
+
+      L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${mapboxAccessToken}`, {
+        id: 'mapbox/light-v9',
+        tileSize: 512,
+        zoomOffset: -1,
+      }).addTo(map);
+
+      L.geoJson(districtsJson).addTo(map);
     },
+    /**
+     * Метод очистки всех маркеров на карте.
+     */
+    clearAllPoins() {
+      this.markers?.forEach((district) => {
+        district?.forEach((marker) => {
+          marker?.remove();
+        });
+      });
+    },
+    /**
+     * Метод скрытия невыбранных маркеров.
+     */
     hideUnselectedPoints() {
       this.districts?.forEach((district, index) => {
-        const selected = this.selectedDistricts?.includes(district)
-        
-        this.markers[index]?.forEach(marker => {
-          const isVisible = selected || !this.selectedDistricts.length
-          marker?.setOpacity(+isVisible)
-        })
+        const selected = this.selectedDistricts?.includes(district);
+
+        this.markers[index]?.forEach((marker) => {
+          const isVisible = selected || !this.selectedDistricts?.length;
+          marker?.setOpacity(+isVisible);
+        });
       });
     },
   },
-}
+};
 </script>
