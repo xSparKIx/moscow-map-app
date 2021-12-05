@@ -49,14 +49,14 @@ export default {
     /**
      * Метод получения случайной точки в пределах координат.
      *
-     * @param {Array} coordinates - Массив с координатами, в пределах которых надо найти точку
+     * @param {Array} coords - Массив с координатами, в пределах которых надо найти точку
      * @return {Array} - Возвращает координаты созданной точки
      */
-    getRandomPoint(coordinates) {
-      if (!coordinates) return;
+    getRandomPoint(coords) {
+      if (!coords) return;
 
-      const x = coordinates.map(point => point[0]);
-      const y = coordinates.map(point => point[1]);
+      const x = coords.map(point => point[0]);
+      const y = coords.map(point => point[1]);
 
       const minX = Math.min(...x);
       const minY = Math.min(...y);
@@ -66,7 +66,7 @@ export default {
       const lat = minY + (Math.random() * (maxY - minY));
       const lng = minX + (Math.random() * (maxX - minX));
 
-      return pointInPolygon([lng, lat], coordinates) ? [lat, lng] : this.getRandomPoint(coordinates);
+      return pointInPolygon([lng, lat], coords) ? [lat, lng] : this.getRandomPoint(coords);
     },
 
     /**

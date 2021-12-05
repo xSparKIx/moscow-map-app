@@ -13,13 +13,13 @@ export default function usePieChart() {
   const chartData = ref({});
 
   /**
-  * Метод создания круговой диаграммы.
-  *
-  * @param {object|string} ref - Ссылка на элемент или id элемента, в который добавляем диаграмму
-  * @param {Array} data - Массив районов Москвы
-  * @param {string} valueField - Наименование параметра объекта, содержащего значения секторов
-  * @param {string} categoryField - Наименование параметра объекта, содержащего наименования секторов
-  */
+   * Метод создания круговой диаграммы.
+   *
+   * @param {object|string} ref - Ссылка на элемент или id элемента, в который добавляем диаграмму
+   * @param {Array} data - Массив районов Москвы
+   * @param {string} valueField - Наименование параметра объекта, содержащего значения секторов
+   * @param {string} categoryField - Наименование параметра объекта, содержащего наименования секторов
+   */
   function createPieChart(ref, data, valueField, categoryField) {
     if (!ref || !data || !valueField || !categoryField) return;
 
