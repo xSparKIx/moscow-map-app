@@ -49,7 +49,7 @@ export default {
         this.clearAllMarkers();
 
         districts?.forEach((district, index) => {
-          district?.points?.forEach((point) => {
+          district?.points?.forEach(point => {
             const marker = new L.marker([point[0], point[1]]).addTo(this.mapData);
 
             if (!this.markers[index]) this.markers[index] = [];
@@ -77,8 +77,8 @@ export default {
      * Метод очистки всех маркеров на карте.
      */
     clearAllMarkers() {
-      this.markers?.forEach((district) => {
-        district?.forEach((marker) => {
+      this.markers?.forEach(district => {
+        district?.forEach(marker => {
           marker?.remove();
         });
       });
@@ -90,7 +90,7 @@ export default {
       this.districts?.forEach((district, index) => {
         const selected = this.selectedDistricts?.includes(district);
 
-        this.markers[index]?.forEach((marker) => {
+        this.markers[index]?.forEach(marker => {
           const isVisible = selected || !this.selectedDistricts?.length;
           marker?.setOpacity(+isVisible);
         });

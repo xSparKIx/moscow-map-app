@@ -53,8 +53,10 @@ export default {
      * @return {Array} - Возвращает координаты созданной точки
      */
     getRandomPoint(coordinates) {
-      const x = coordinates.map((point) => point[0]);
-      const y = coordinates.map((point) => point[1]);
+      if (!coordinates) return;
+
+      const x = coordinates.map(point => point[0]);
+      const y = coordinates.map(point => point[1]);
 
       const minX = Math.min(...x);
       const minY = Math.min(...y);
@@ -71,7 +73,7 @@ export default {
      * Метод получения и преобразования округов Москвы
      */
     getDistricts() {
-      this.districts = districtsJson?.features?.map((district) => {
+      this.districts = districtsJson?.features?.map(district => {
         return {
           ...district?.properties,
           // Точки в этом районе
@@ -88,7 +90,7 @@ export default {
     clearPoints() {
       this.selectedDistricts = [];
 
-      this.districts?.forEach((district) => {
+      this.districts?.forEach(district => {
         district.points = [];
         district.pointsCount = 0;
       });
@@ -102,7 +104,7 @@ export default {
     selectDistrict(district) {
       !this.selectedDistricts?.includes(district) ?
         this.selectedDistricts?.push(district) :
-        this.selectedDistricts?.splice(this.selectedDistricts?.findIndex((item) => item.OKATO === district.OKATO), 1);
+        this.selectedDistricts?.splice(this.selectedDistricts?.findIndex(item => item.OKATO === district.OKATO), 1);
     },
   },
 

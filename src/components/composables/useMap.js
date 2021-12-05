@@ -3,6 +3,11 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet';
 import districtsJson from '../../assets/districts.json';
 
+/**
+ * Функция композиции карты.
+ *
+ * @returns {object} - Возвращает набор методов и параметров карты
+ */
 export default function useMap() {
   // Ссылка на карту
   const mapData = ref({});
