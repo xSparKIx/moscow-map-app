@@ -1,4 +1,5 @@
 <script setup>
+import * as leaflet from 'leaflet';
 import useMap from './composables/useMap';
 
 const { mapData, createMap } = useMap();
@@ -50,7 +51,7 @@ export default {
 
         districts?.forEach((district, index) => {
           district?.points?.forEach(point => {
-            const marker = new L.marker([point[0], point[1]]).addTo(this.mapData);
+            const marker = new leaflet.marker([point[0], point[1]]).addTo(this.mapData);
 
             if (!this.markers[index]) this.markers[index] = [];
             this.markers[index].push(marker);
